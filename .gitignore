@@ -1,0 +1,47 @@
+node_modules/
+dist/
+build/
+.next/
+out/
+coverage/
+.turbo/
+*.log
+npm-debug.log*
+.env
+.env.*
+!.env.example
+!.env*.example
+
+# Flutter
+apps/mobile/.dart_tool/
+apps/mobile/.packages
+apps/mobile/.pub-cache/
+apps/mobile/.pub/
+apps/mobile/build/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/**/Generated.xcconfig
+apps/mobile/**/flutter_export_environment.sh
+apps/mobile/.android/
+apps/mobile/.ios/
+**/*.iml
+**/DocSets/
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+**/google-services.json
+**/GoogleService-Info.plist
+
+# IDE / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Secrets & local
+*.pem
+credentials/
+secrets/

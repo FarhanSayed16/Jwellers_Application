@@ -1,0 +1,21 @@
+{
+  "name": "jwellers-application",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/admin",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @jwellers/api",
+    "dev:admin": "npm run dev -w @jwellers/admin",
+    "build:api": "npm run build -w @jwellers/api",
+    "build:admin": "npm run build -w @jwellers/admin",
+    "lint:api": "npm run lint -w @jwellers/api",
+    "lint:admin": "npm run lint -w @jwellers/admin",
+    "lint": "npm run lint:api && npm run lint:admin"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
