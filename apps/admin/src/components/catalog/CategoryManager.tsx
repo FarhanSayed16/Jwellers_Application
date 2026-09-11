@@ -171,7 +171,9 @@ export function CategoryManager() {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="font-medium">{root.name}</p>
-                  <p className="text-xs text-[var(--color-text-secondary)]">/{root.slug}</p>
+                  <p className="text-xs text-[var(--color-text-secondary)]">
+                    /{root.slug} · sort {root.sortOrder}
+                  </p>
                 </div>
                 <div className="flex gap-2 text-sm">
                   <button type="button" className="text-[var(--color-primary)]" onClick={() => setEditing(root)}>
@@ -236,6 +238,18 @@ export function CategoryManager() {
                 onChange={(e) => setEditing({ ...editing, isActive: e.target.checked })}
               />
               Active
+            </label>
+            <label className="block space-y-1 text-sm">
+              Sort order
+              <input
+                type="number"
+                className="w-full rounded border border-[var(--color-border)] px-3 py-2 text-sm"
+                value={editing.sortOrder}
+                onChange={(e) =>
+                  setEditing({ ...editing, sortOrder: Number(e.target.value) || 0 })
+                }
+              />
+              <span className="text-xs text-[var(--color-text-secondary)]">Lower numbers appear first.</span>
             </label>
             <div className="flex gap-2">
               <button type="submit" className="rounded bg-[var(--color-primary)] px-4 py-2 text-sm text-white">

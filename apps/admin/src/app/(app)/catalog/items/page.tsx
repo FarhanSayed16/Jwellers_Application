@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/PageHeader';
 import { api, ApiClientError } from '@/lib/api';
 import type { Category, Item } from '@/lib/catalogTypes';
+import { CsvImportPanel } from '@/components/catalog/CsvImportPanel';
 
 export default function ItemsListPage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -50,9 +51,18 @@ export default function ItemsListPage() {
   }
 
   async function softDelete(id: string) {
-    if (!confirm('Archive / soft-delete this item?')) return;
+    if (!confirm('Archive / soft-delete this item? It will leave the public catalog.')) return;
     await api.delete(`/items/${id}`);
     await load();
+  }
+
+  async function cloneItem(id: string) {
+    try {
+      const data = await api.post<{ item: Item }>(`/items/${id}/clone`, {});
+      window.location.href = `/catalog/items/${data.item.id}`;
+    } catch (err) {
+      setError(err instanceof ApiClientError ? err.message : 'Clone failed');
+    }
   }
 
   return (
@@ -108,6 +118,11 @@ export default function ItemsListPage() {
       </div>
 
       {error ? <p className="text-sm text-[var(--color-error)]">{error}</p> : null}
+
+      <div className="mb-6">
+        <CsvImportPanel />
+      </div>
+
       {loading ? <p className="text-sm text-[var(--color-text-secondary)]">Loading…</p> : null}
 
       {!loading ? (
@@ -151,6 +166,15 @@ export default function ItemsListPage() {
                       <Link href={`/catalog/items/${item.id}`} className="text-[var(--color-primary)]">
                         Edit
                       </Link>
+                      {!item.deletedAt ? (
+                        <button
+                          type="button"
+                          className="text-[var(--color-primary)]"
+                          onClick={() => void cloneItem(item.id)}
+                        >
+                          Clone
+                        </button>
+                      ) : null}
                       {item.deletedAt ? (
                         <button type="button" className="text-[var(--color-success)]" onClick={() => void restore(item.id)}>
                           Restore

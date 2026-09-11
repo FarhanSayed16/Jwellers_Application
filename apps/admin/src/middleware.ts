@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const PUBLIC = ['/login', '/forgot-password', '/reset-password'];
+const PUBLIC = [
+  '/login',
+  '/forgot-password',
+  '/reset-password',
+  '/legal',
+];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -15,7 +20,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (session && isPublic) {
+  // Do not bounce logged-in admins away from public legal pages
+  if (session && isPublic && !pathname.startsWith('/legal')) {
     const url = req.nextUrl.clone();
     url.pathname = '/';
     url.search = '';

@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { Fraunces, Source_Sans_3 } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth';
+import { initAdminSentry } from '@/lib/sentry';
 import './globals.css';
+
+initAdminSentry();
 
 const fraunces = Fraunces({
   variable: '--font-fraunces',
