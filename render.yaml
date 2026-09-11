@@ -1,0 +1,58 @@
+# Demo Jewellers — Render Blueprint (provider-owned staging).
+# Connect this repo in Render → New → Blueprint. Adjust service name as needed.
+# Docs: docs/phase25/DEPLOY_DEMO.md
+
+services:
+  - type: web
+    name: jwellers-demo-api
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm ci && npm run build -w @jwellers/api
+    startCommand: npm run start -w @jwellers/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_SLUG
+        value: demo
+      - key: PORT
+        value: 4000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: OTP_PEPPER
+        generateValue: true
+      - key: ADMIN_CORS_ORIGIN
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: OTP_DEV_BYPASS
+        value: "false"
+      - key: FEATURE_CHAT
+        value: "true"
+      - key: FEATURE_WHATSAPP
+        value: "true"
+      - key: FEATURE_RATE_HISTORY
+        value: "true"
+      - key: FEATURE_SIZE_GUIDE
+        value: "true"
+      - key: FEATURE_OFFERS
+        value: "true"
+      - key: FEATURE_CUSTOM_REQUESTS
+        value: "true"
+      - key: FEATURE_HALLMARK
+        value: "true"
+      - key: MOBILE_MIN_VERSION
+        value: "1.0.0"
+      - key: MOBILE_LATEST_VERSION
+        value: "1.0.0"
+      - key: MOBILE_FORCE_UPDATE
+        value: "false"

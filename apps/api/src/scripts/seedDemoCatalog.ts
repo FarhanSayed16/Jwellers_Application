@@ -156,7 +156,7 @@ async function main() {
     const till = new Date(Date.now() + 86400000 * 30);
     await OfferModel.create({
       title: 'Demo festive making-charge offer',
-      body: 'Sample offer for sales walkthroughs. Replace before client launch.',
+      description: 'Sample offer for sales walkthroughs. Replace before client launch.',
       validFrom: from,
       validTill: till,
       isActive: true,
