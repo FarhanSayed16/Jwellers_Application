@@ -2,8 +2,12 @@ import { env, isProd } from './config/env';
 import { createApp } from './app';
 import { connectMongo } from './db/connection';
 import { ensureAllModelsLoaded } from './db/models';
+import { initSentry } from './services/sentry';
+import { logger } from './utils/logger';
 
 async function boot() {
+  initSentry();
+
   try {
     if (env.MONGODB_URI) {
       await connectMongo();
@@ -11,22 +15,25 @@ async function boot() {
     } else if (isProd) {
       throw new Error('[boot] MONGODB_URI required in production');
     } else {
-      console.warn('[boot] MONGODB_URI missing — API will run but /ready will be 503');
+      logger.warn('mongodb_uri_missing');
     }
   } catch (err) {
     if (isProd) {
-      console.error('[boot] Mongo connection failed — exiting', err);
+      logger.error('mongo_boot_failed', { message: err instanceof Error ? err.message : String(err) });
       process.exit(1);
     }
-    console.warn('[boot] Mongo connection failed — continuing in development', err);
+    logger.warn('mongo_boot_failed_continuing', {
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   const app = createApp();
   app.listen(env.PORT, () => {
-    console.log(`[api] env=${env.NODE_ENV} client=${env.CLIENT_SLUG}`);
-    console.log(`[api] listening on http://localhost:${env.PORT}`);
-    console.log(`[api] health  → http://localhost:${env.PORT}/health`);
-    console.log(`[api] ready   → http://localhost:${env.PORT}/ready`);
+    logger.info('api_listening', {
+      env: env.NODE_ENV,
+      clientSlug: env.CLIENT_SLUG,
+      port: env.PORT,
+    });
   });
 }
 

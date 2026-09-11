@@ -5,6 +5,7 @@ import { env } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { globalRateLimiter } from './middleware/rateLimit';
 import { requestIdMiddleware } from './middleware/requestId';
+import { requestLogMiddleware } from './middleware/requestLog';
 import { configRouter } from './modules/config/config.routes';
 import { adminAuthRouter } from './modules/auth/adminAuth.routes';
 import { customerAuthRouter } from './modules/auth/customerAuth.routes';
@@ -17,6 +18,7 @@ import { customRequestsRouter } from './modules/customRequests/customRequests.ro
 import { offersRouter } from './modules/offers/offers.routes';
 import { staffRouter } from './modules/staff/staff.routes';
 import { chatRouter } from './modules/chat/chat.routes';
+import { devicesRouter } from './modules/devices/devices.routes';
 import { systemRouter } from './routes/system';
 
 export function createApp() {
@@ -25,10 +27,13 @@ export function createApp() {
   app.disable('x-powered-by');
 
   app.use(requestIdMiddleware);
+  app.use(requestLogMiddleware);
   app.use(helmet());
   app.use(
     cors({
-      origin: env.ADMIN_CORS_ORIGIN.split(',').map((o) => o.trim()),
+      origin: env.ADMIN_CORS_ORIGIN.split(',')
+        .map((o) => o.trim())
+        .filter(Boolean),
       credentials: true,
     }),
   );
@@ -48,6 +53,7 @@ export function createApp() {
   app.use('/api/v1', offersRouter);
   app.use('/api/v1', staffRouter);
   app.use('/api/v1', chatRouter);
+  app.use('/api/v1', devicesRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

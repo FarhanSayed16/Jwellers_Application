@@ -92,7 +92,15 @@ export function RateForm() {
         force: force || undefined,
       });
       if (notify) {
-        setToast('Rates saved. Push notify is not live yet (Phase 21) — checkbox noted.');
+        const notifyRes = await api.post<{
+          notify: { attempted: number; successCount: number; configured: boolean; dryRun?: boolean };
+        }>('/rates/notify', {});
+        const n = notifyRes.notify;
+        setToast(
+          n.configured
+            ? `Rates saved. Push sent to ${n.attempted} device(s) (${n.successCount} accepted).`
+            : 'Rates saved. Push skipped — FCM is not configured on the API.',
+        );
       } else {
         setToast('Rates saved successfully.');
       }
@@ -178,7 +186,7 @@ export function RateForm() {
         </label>
         <label className="mt-4 flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
           <input type="checkbox" checked={notify} onChange={(e) => setNotify(e.target.checked)} />
-          Notify customers (push — Phase 21)
+          Notify customers (push)
         </label>
 
         {confirmForce ? (

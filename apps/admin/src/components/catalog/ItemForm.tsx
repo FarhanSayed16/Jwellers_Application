@@ -6,6 +6,7 @@ import { api, ApiClientError } from '@/lib/api';
 import type { Category, Item, ItemImage } from '@/lib/catalogTypes';
 import { ImageUploader } from './ImageUploader';
 import { FeatureGate } from '@/components/FeatureGate';
+import { isMediaConfiguredError, uploadAdminImage } from '@/lib/upload';
 
 type FormState = {
   sku: string;
@@ -262,11 +263,36 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             <>
               <label className="space-y-1 text-sm">
                 HUID
-                <input className="w-full rounded border border-[var(--color-border)] px-3 py-2" value={form.huid} onChange={(e) => set('huid', e.target.value)} />
+                <input className="w-full rounded border border-[var(--color-border)] px-3 py-2" value={form.huid} onChange={(e) => set('huid', e.target.value)} placeholder="Hallmark Unique ID" />
               </label>
-              <label className="space-y-1 text-sm">
-                Hallmark image URL
-                <input className="w-full rounded border border-[var(--color-border)] px-3 py-2" value={form.hallmarkImageUrl} onChange={(e) => set('hallmarkImageUrl', e.target.value)} />
+              <label className="space-y-1 text-sm md:col-span-1">
+                Hallmark stamp image URL
+                <div className="flex flex-wrap gap-2">
+                  <input className="min-w-[160px] flex-1 rounded border border-[var(--color-border)] px-3 py-2" value={form.hallmarkImageUrl} onChange={(e) => set('hallmarkImageUrl', e.target.value)} />
+                  <label className="cursor-pointer rounded border border-[var(--color-border)] px-3 py-2 text-sm">
+                    Upload
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const uploaded = await uploadAdminImage(file, 'items');
+                          set('hallmarkImageUrl', uploaded.url);
+                        } catch (err) {
+                          if (isMediaConfiguredError(err)) {
+                            setError('Cloudinary not configured — paste a hallmark image URL.');
+                          } else {
+                            setError(err instanceof Error ? err.message : 'Upload failed');
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                <p className="text-xs text-[var(--color-text-secondary)]">Shows as hallmark stamp — not a “verified” claim.</p>
               </label>
             </>
           </FeatureGate>
@@ -352,9 +378,30 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             Save & add another
           </button>
         ) : (
-          <button type="button" className="rounded border border-[var(--color-error)] px-4 py-2 text-sm text-[var(--color-error)]" onClick={() => void onDelete()}>
-            Soft-delete
-          </button>
+          <>
+            <button
+              type="button"
+              disabled={saving}
+              className="rounded border border-[var(--color-border)] px-4 py-2 text-sm"
+              onClick={async () => {
+                if (!itemId) return;
+                setSaving(true);
+                try {
+                  const data = await api.post<{ item: Item }>(`/items/${itemId}/clone`, {});
+                  router.push(`/catalog/items/${data.item.id}`);
+                } catch (err) {
+                  setError(err instanceof ApiClientError ? err.message : 'Clone failed');
+                } finally {
+                  setSaving(false);
+                }
+              }}
+            >
+              Clone item
+            </button>
+            <button type="button" className="rounded border border-[var(--color-error)] px-4 py-2 text-sm text-[var(--color-error)]" onClick={() => void onDelete()}>
+              Soft-delete
+            </button>
+          </>
         )}
       </div>
     </form>

@@ -4,6 +4,8 @@ import { z } from 'zod';
 
 // Load apps/api/.env regardless of process.cwd() (repo root vs package)
 loadDotenv({ path: path.resolve(__dirname, '../../.env') });
+// Optional mail secrets (gitignored) — Resend / SendGrid / SMTP
+loadDotenv({ path: path.resolve(__dirname, '../../secrets/optional-email.env') });
 loadDotenv(); // also allow cwd override
 
 const boolFromEnv = z
@@ -42,8 +44,21 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string().optional().default(''),
   CLOUDINARY_API_SECRET: z.string().optional().default(''),
 
+  /** Transactional email: resend (preferred) | sendgrid */
+  MAIL_PROVIDER: z.enum(['resend', 'sendgrid', 'none']).optional().default('resend'),
+  RESEND_API_KEY: z.string().optional().default(''),
+  EMAIL_FROM: z.string().optional().default(''),
+  EMAIL_REPLY_TO: z.string().optional().default(''),
+  /** Comma-separated shop alert inbox for new enquiries / custom requests */
+  EMAIL_NOTIFY_TO: z.string().optional().default(''),
+  SENDGRID_API_KEY: z.string().optional().default(''),
+  SENDGRID_FROM_EMAIL: z.string().optional().default(''),
+  SENDGRID_FROM_NAME: z.string().optional().default(''),
+
   FCM_PROJECT_ID: z.string().optional().default(''),
   FIREBASE_SERVICE_ACCOUNT_PATH: z.string().optional().default(''),
+  /** When true, FCM sends are recorded locally (verify scripts / CI). */
+  FCM_DRY_RUN: boolFromEnv.default(false),
 
   ADMIN_CORS_ORIGIN: z.string().default('http://localhost:3000'),
 
@@ -70,6 +85,23 @@ const envSchema = z.object({
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
+
+  /** Optional Sentry DSN — no-op when empty */
+  SENTRY_DSN: z.string().optional().default(''),
+  SENTRY_RELEASE: z.string().optional().default(''),
+
+  /** Soft/force update — exposed on public config for mobile */
+  MOBILE_MIN_VERSION: z.string().optional().default('1.0.0'),
+  MOBILE_LATEST_VERSION: z.string().optional().default('1.0.0'),
+  MOBILE_FORCE_UPDATE: boolFromEnv.default(false),
+  MOBILE_STORE_URL_ANDROID: z.string().optional().default(''),
+  MOBILE_STORE_URL_IOS: z.string().optional().default(''),
+
+  /** Hosted policy URLs (admin /legal/* or client site). Exposed on public config. */
+  LEGAL_PRIVACY_URL: z.union([z.string().url(), z.literal('')]).optional().default(''),
+  LEGAL_TERMS_URL: z.union([z.string().url(), z.literal('')]).optional().default(''),
+  LEGAL_DELETE_ACCOUNT_URL: z.union([z.string().url(), z.literal('')]).optional().default(''),
+  LEGAL_SUPPORT_EMAIL: z.union([z.string().email(), z.literal('')]).optional().default(''),
 });
 
 export type Env = z.infer<typeof envSchema>;
