@@ -133,15 +133,24 @@ async function main() {
     .send({
       sku: 'DEMO-RING-001',
       title: 'Demo Classic Ring',
-      categoryId: subId,
+      categoryId,
+      subcategoryId: subId,
       status: 'active',
       metal: 'gold',
-      purity: '22k',
-      weightGrams: 4.2,
+      purity: '22K',
+      grossWeightGrams: 4.2,
+      netWeightGrams: 4.0,
       makingCharge: { type: 'percent', value: 12 },
       images: [
-        { url: 'https://res.cloudinary.com/demo/image/upload/sample.jpg', sortOrder: 0 },
-        { url: 'https://res.cloudinary.com/demo/image/upload/docs/models.jpg', sortOrder: 1 },
+        {
+          url: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+          sortOrder: 0,
+          isPrimary: true,
+        },
+        {
+          url: 'https://res.cloudinary.com/demo/image/upload/docs/models.jpg',
+          sortOrder: 1,
+        },
       ],
       isFeatured: true,
       isNewArrival: true,
@@ -157,17 +166,9 @@ async function main() {
   }
   const items = await request(app).get('/api/v1/items').query({ limit: 20 });
   if (items.status !== 200) throw new Error(`items list: ${JSON.stringify(items.body)}`);
-  const listed = (items.body.data.items as Array<{ id: string; sku: string }>) ?? items.body.data;
-  const found = Array.isArray(listed)
-    ? listed.some((i: { id?: string; sku?: string }) => i.id === itemId || i.sku === 'DEMO-RING-001')
-    : false;
-  // items shape may be { items: [] } or nested — tolerate either
-  const rawItems = items.body.data?.items ?? items.body.data ?? [];
-  const arr = Array.isArray(rawItems) ? rawItems : [];
-  if (!arr.some((i: { id?: string; sku?: string }) => i.id === itemId || i.sku === 'DEMO-RING-001') && !found) {
-    // still OK if detail works
-    const detail = await request(app).get(`/api/v1/items/${itemId}`);
-    if (detail.status !== 200) throw new Error(`item detail missing from list and detail`);
+  const arr = (items.body.data?.items ?? []) as Array<{ id?: string; sku?: string }>;
+  if (!arr.some((i) => i.id === itemId || i.sku === 'DEMO-RING-001')) {
+    throw new Error(`item not in public list: ${JSON.stringify(items.body.data)}`);
   }
   const pubCfg = await request(app).get('/api/v1/config/public');
   if (pubCfg.status !== 200 || pubCfg.body.data.clientSlug !== 'demo') {
@@ -225,13 +226,13 @@ async function main() {
   console.log('[verify:phase25] 8 WhatsApp flag on OK');
 
   // 9. Logout + delete disposable user
-  const logout = await request(app)
-    .post('/api/v1/auth/customer/logout')
-    .set(custAuth)
-    .send({ refreshToken: customer.refresh });
+  const logout = await request(app).post('/api/v1/auth/customer/logout').set(custAuth);
   if (logout.status !== 200) throw new Error(`logout: ${JSON.stringify(logout.body)}`);
 
-  // Re-auth to delete (logout revoked session)
+  // Fresh OTP session after logout (clear cooldown challenges)
+  const { OtpChallengeModel } = await import('../db/models');
+  await OtpChallengeModel.deleteMany({}).exec();
+
   const again = await customerAuth(app, phone);
   const del = await request(app)
     .delete('/api/v1/auth/customer/me')
