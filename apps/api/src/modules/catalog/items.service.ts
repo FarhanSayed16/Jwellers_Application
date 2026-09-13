@@ -219,6 +219,8 @@ export async function getItemById(
       { $inc: { viewCount: 1 } },
       { returnDocument: 'after' },
     ).exec();
+    const { recordFeatureEventSafe } = await import('../analytics/analytics.service');
+    void recordFeatureEventSafe({ type: 'item_view', itemId: id });
   }
   return toItemDto(doc);
 }

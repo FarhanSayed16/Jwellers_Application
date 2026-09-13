@@ -32,6 +32,16 @@ const shopConfigSchema = new Schema(
       value: { type: Number, default: 10 },
     },
     gstPercentDefault: { type: Number, default: 3 },
+    /** Deduction applied to old-gold exchange estimates (FEATURE_OLD_GOLD_EXCHANGE). */
+    exchangeDeductionPercent: { type: Number, default: 8 },
+    /** Retailer margin on metals API spot → published shop rate (FEATURE_RATE_API). */
+    rateApi: {
+      marginPercentGold: { type: Number, default: 2 },
+      marginPercentSilver: { type: Number, default: 3 },
+      lastFetchAt: { type: Date },
+      lastFetchError: { type: String },
+      lastProvider: { type: String },
+    },
     currency: { type: String, default: 'INR' },
     timezone: { type: String, default: 'Asia/Kolkata' },
     isActive: { type: Boolean, default: true },

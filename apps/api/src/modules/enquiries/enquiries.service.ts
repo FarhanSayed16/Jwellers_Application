@@ -64,6 +64,13 @@ export async function createEnquiry(input: {
     message,
   }).catch(() => undefined);
 
+  const { recordFeatureEventSafe } = await import('../analytics/analytics.service');
+  void recordFeatureEventSafe({
+    type: 'enquiry_create',
+    customerId: input.customerId,
+    itemId: input.itemId,
+  });
+
   return toEnquiryDto(doc);
 }
 
