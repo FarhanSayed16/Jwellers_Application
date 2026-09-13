@@ -1,6 +1,16 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 
+const NAV = [
+  { href: '/legal/privacy', label: 'Privacy' },
+  { href: '/legal/terms', label: 'Terms' },
+  { href: '/legal/cookies', label: 'Cookies' },
+  { href: '/legal/cookie-preferences', label: 'Preferences' },
+  { href: '/legal/faq', label: 'FAQ' },
+  { href: '/legal/support', label: 'Support' },
+  { href: '/legal/delete-account', label: 'Delete account' },
+] as const;
+
 export function LegalShell({
   title,
   children,
@@ -12,17 +22,13 @@ export function LegalShell({
     <div className="min-h-screen bg-[var(--color-background,#F7F5F0)] text-[var(--color-text-primary,#14201C)]">
       <header className="border-b border-[var(--color-border,#D9D3C7)] bg-white px-4 py-4">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
-          <p className="font-semibold tracking-tight">Ratnaraj Jewellers · Legal</p>
-          <nav className="flex flex-wrap gap-3 text-sm">
-            <Link className="underline-offset-2 hover:underline" href="/legal/privacy">
-              Privacy
-            </Link>
-            <Link className="underline-offset-2 hover:underline" href="/legal/terms">
-              Terms
-            </Link>
-            <Link className="underline-offset-2 hover:underline" href="/legal/delete-account">
-              Delete account
-            </Link>
+          <p className="font-semibold tracking-tight">Shop Legal</p>
+          <nav className="flex flex-wrap gap-3 text-sm" aria-label="Legal">
+            {NAV.map((item) => (
+              <Link key={item.href} className="underline-offset-2 hover:underline" href={item.href}>
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
@@ -32,8 +38,8 @@ export function LegalShell({
           {children}
         </article>
         <p className="mt-10 text-xs text-[var(--color-text-secondary,#5A6B65)]">
-          Template for Demo / Ratnaraj. Have counsel review before Play production listing.
-          Last updated: 11 Sep 2026.
+          Template for Demo / client shops. Have counsel review before Play production listing.
+          Last updated: 12 Sep 2026.
         </p>
       </main>
     </div>

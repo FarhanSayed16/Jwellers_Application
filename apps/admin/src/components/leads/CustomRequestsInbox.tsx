@@ -83,10 +83,14 @@ export function CustomRequestsInbox() {
             <p className="whitespace-pre-wrap">{selected.description}</p>
             {selected.budgetHint ? <p>Budget: {selected.budgetHint}</p> : null}
             <div className="flex flex-wrap gap-2">
-              {selected.referenceImageUrls.map((url) => (
+              {selected.referenceImageUrls.map((url, index) => (
                 <a key={url} href={url} target="_blank" rel="noreferrer">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="" className="h-16 w-16 rounded object-cover" />
+                  <img
+                    src={url}
+                    alt={`Reference image ${index + 1}`}
+                    className="h-16 w-16 rounded object-cover"
+                  />
                 </a>
               ))}
             </div>

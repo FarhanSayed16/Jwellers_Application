@@ -34,6 +34,7 @@ export type FeatureFlags = {
   hallmark: boolean;
   digitalBilling: boolean;
   razorpayPayments: boolean;
+  oldGoldExchange: boolean;
   [key: string]: boolean | string | null | undefined;
 };
 

@@ -14,8 +14,23 @@ const FLAG_LABELS: Record<string, string> = {
   hallmark: 'Hallmark',
   digitalBilling: 'Digital billing',
   razorpayPayments: 'Razorpay payments',
+  oldGoldExchange: 'Old-gold exchange',
+  itemQr: 'Item QR / print tags',
+  shareRateCard: 'Share rate card',
+  appointments: 'Appointments',
+  storeMode: 'Store mode (tablet)',
+  curatedBoards: 'Curated Home boards',
+  analytics: 'Analytics',
+  crmLight: 'CRM-lite',
+  schemes: 'Schemes',
+  referrals: 'Referrals',
+  priceAlerts: 'Price alerts',
+  rateApi: 'Rate API',
+  whatsappBusinessApi: 'WhatsApp Business API',
+  multiBranch: 'Multi-branch (not shipped)',
+  offlineCatalog: 'Offline catalog (not shipped)',
+  i18n: 'i18n (not shipped)',
 };
-
 export function SettingsPanel() {
   const { admin, features, logout } = useAuth();
   const [currentPassword, setCurrentPassword] = useState('');
@@ -30,7 +45,7 @@ export function SettingsPanel() {
     try {
       await api.post('/auth/admin/password/change', { currentPassword, newPassword });
       setToast('Password updated. Please sign in again.');
-      clearTokens();
+      await clearTokens();
       setTimeout(() => {
         window.location.href = '/login';
       }, 800);

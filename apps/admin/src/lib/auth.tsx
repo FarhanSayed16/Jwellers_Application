@@ -9,7 +9,14 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { api, clearTokens, persistTokens, getAccessToken, ApiClientError } from './api';
+import {
+  api,
+  clearTokens,
+  persistTokens,
+  getAccessToken,
+  hydrateAccessToken,
+  ApiClientError,
+} from './api';
 import type { AdminUser, FeatureFlags } from './types';
 
 type AuthState = {
@@ -29,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshMe = useCallback(async () => {
-    const token = getAccessToken();
+    const token = await getAccessToken();
     if (!token) {
       setAdmin(null);
       return;
@@ -48,11 +55,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
-        if (getAccessToken()) {
+        await hydrateAccessToken();
+        if (await getAccessToken()) {
           await refreshMe();
         }
       } catch {
-        clearTokens();
+        await clearTokens();
         if (!cancelled) setAdmin(null);
       } finally {
         if (!cancelled) setLoading(false);
@@ -73,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       { emailOrPhone, password, deviceInfo: 'admin-web' },
       false,
     );
-    persistTokens(data.accessToken, data.refreshToken);
+    await persistTokens(data.accessToken, data.refreshToken);
     setAdmin(data.admin);
     try {
       const flags = await api.get<FeatureFlags>('/config/features', false);
@@ -85,7 +93,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
-      if (getAccessToken()) {
+      if (await getAccessToken()) {
         await api.post('/auth/admin/logout', {});
       }
     } catch (err) {
@@ -93,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore network errors on logout
       }
     } finally {
-      clearTokens();
+      await clearTokens();
       setAdmin(null);
     }
   }, []);

@@ -70,6 +70,27 @@ export function OffersAdmin() {
     await load();
   }
 
+  async function broadcastWa(offer: Offer) {
+    setError(null);
+    try {
+      const data = await api.post<{
+        broadcast: { status: string; dryRun: boolean; recipientCount: number };
+      }>('/admin/whatsapp-business/broadcast/offer', { offerId: offer.id });
+      const b = data.broadcast;
+      alert(
+        b.dryRun
+          ? `WA offer broadcast dry-run (${b.recipientCount} recipients).`
+          : `WA offer broadcast ${b.status} (${b.recipientCount} recipients).`,
+      );
+    } catch (err) {
+      setError(
+        err instanceof ApiClientError
+          ? err.message
+          : 'Broadcast failed (is FEATURE_WHATSAPP_BUSINESS_API on?)',
+      );
+    }
+  }
+
   return (
     <div className="space-y-6">
       {error ? <p className="text-sm text-[var(--color-error)]">{error}</p> : null}
@@ -105,9 +126,12 @@ export function OffersAdmin() {
                   {offer.validTill ? ` · till ${new Date(offer.validTill).toLocaleDateString('en-IN')}` : ''}
                 </p>
               </div>
-              <div className="flex gap-2 text-sm">
+              <div className="flex flex-wrap gap-2 text-sm">
                 <button type="button" className="text-[var(--color-primary)]" onClick={() => void toggle(offer)}>
                   Toggle
+                </button>
+                <button type="button" className="text-[var(--color-primary)]" onClick={() => void broadcastWa(offer)}>
+                  WA broadcast
                 </button>
                 <button type="button" className="text-[var(--color-error)]" onClick={() => void remove(offer.id)}>
                   Delete

@@ -1,38 +1,101 @@
 import type { ApiErrorBody, ApiSuccess } from './types';
 
-const ACCESS_KEY = 'jwellers_admin_access';
-const REFRESH_KEY = 'jwellers_admin_refresh';
+const ACCESS_COOKIE = 'jwellers_admin_access';
+const REFRESH_COOKIE = 'jwellers_admin_refresh';
 const SESSION_COOKIE = 'jwellers_admin_session';
 
-/** MVP: tokens in localStorage (document risk). Prefer httpOnly cookie later. */
-export function getAccessToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(ACCESS_KEY);
-}
+/** In-memory access token — prefer over localStorage; hydrate from httpOnly cookie. */
+let memoryAccessToken: string | null = null;
+let hydratePromise: Promise<string | null> | null = null;
 
-export function getRefreshToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(REFRESH_KEY);
-}
-
-export function setSessionCookies() {
-  document.cookie = `${SESSION_COOKIE}=1; path=/; SameSite=Lax`;
-}
-
-export function clearSessionCookies() {
+function clearClientSessionCookie() {
+  if (typeof document === 'undefined') return;
   document.cookie = `${SESSION_COOKIE}=; path=/; Max-Age=0; SameSite=Lax`;
 }
 
-export function persistTokens(accessToken: string, refreshToken: string) {
-  localStorage.setItem(ACCESS_KEY, accessToken);
-  localStorage.setItem(REFRESH_KEY, refreshToken);
-  setSessionCookies();
+async function postSession(accessToken: string, refreshToken: string) {
+  await fetch('/api/auth/session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ accessToken, refreshToken }),
+    credentials: 'same-origin',
+  });
 }
 
-export function clearTokens() {
-  localStorage.removeItem(ACCESS_KEY);
-  localStorage.removeItem(REFRESH_KEY);
-  clearSessionCookies();
+async function deleteSession() {
+  try {
+    await fetch('/api/auth/session', { method: 'DELETE', credentials: 'same-origin' });
+  } catch {
+    // ignore
+  }
+}
+
+/** Hydrate memory from httpOnly cookie via same-origin route. */
+export async function hydrateAccessToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  if (memoryAccessToken) return memoryAccessToken;
+  if (!hydratePromise) {
+    hydratePromise = (async () => {
+      try {
+        const res = await fetch('/api/auth/access', { credentials: 'same-origin' });
+        if (!res.ok) return null;
+        const json = (await res.json()) as { accessToken?: string | null };
+        memoryAccessToken = json.accessToken ?? null;
+        return memoryAccessToken;
+      } catch {
+        return null;
+      } finally {
+        hydratePromise = null;
+      }
+    })();
+  }
+  return hydratePromise;
+}
+
+export async function getAccessToken(): Promise<string | null> {
+  if (typeof window === 'undefined') return null;
+  if (memoryAccessToken) return memoryAccessToken;
+  return hydrateAccessToken();
+}
+
+/** Sync peek of in-memory token only (no network). */
+export function peekAccessToken(): string | null {
+  return memoryAccessToken;
+}
+
+async function getRefreshTokenFromCookie(): Promise<string | null> {
+  try {
+    const res = await fetch('/api/auth/refresh', { credentials: 'same-origin' });
+    if (!res.ok) return null;
+    const json = (await res.json()) as { refreshToken?: string | null };
+    return json.refreshToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function persistTokens(accessToken: string, refreshToken: string) {
+  memoryAccessToken = accessToken;
+  // Remove legacy localStorage tokens if present
+  try {
+    localStorage.removeItem(ACCESS_COOKIE);
+    localStorage.removeItem(REFRESH_COOKIE);
+  } catch {
+    // ignore
+  }
+  await postSession(accessToken, refreshToken);
+}
+
+export async function clearTokens() {
+  memoryAccessToken = null;
+  try {
+    localStorage.removeItem(ACCESS_COOKIE);
+    localStorage.removeItem(REFRESH_COOKIE);
+  } catch {
+    // ignore
+  }
+  clearClientSessionCookie();
+  await deleteSession();
 }
 
 export function apiBaseUrl(): string {
@@ -64,7 +127,7 @@ type RequestOpts = {
 let refreshPromise: Promise<boolean> | null = null;
 
 async function tryRefresh(): Promise<boolean> {
-  const refreshToken = getRefreshToken();
+  const refreshToken = await getRefreshTokenFromCookie();
   if (!refreshToken) return false;
   try {
     const res = await fetch(`${apiBaseUrl()}/auth/admin/token/refresh`, {
@@ -77,7 +140,7 @@ async function tryRefresh(): Promise<boolean> {
       refreshToken: string;
     }> | ApiErrorBody;
     if (!res.ok || !('success' in json) || !json.success) return false;
-    persistTokens(json.data.accessToken, json.data.refreshToken);
+    await persistTokens(json.data.accessToken, json.data.refreshToken);
     return true;
   } catch {
     return false;
@@ -89,7 +152,7 @@ export async function apiRequest<T>(path: string, opts: RequestOpts = {}): Promi
     'Content-Type': 'application/json',
   };
   if (opts.auth !== false) {
-    const token = getAccessToken();
+    const token = await getAccessToken();
     if (token) headers.Authorization = `Bearer ${token}`;
   }
 
@@ -114,7 +177,11 @@ export async function apiRequest<T>(path: string, opts: RequestOpts = {}): Promi
     if (ok) {
       return apiRequest<T>(path, { ...opts, _retried: true });
     }
-    clearTokens();
+    await clearTokens();
+    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+      const next = encodeURIComponent(window.location.pathname + window.location.search);
+      window.location.assign(`/login?reason=session&next=${next}`);
+    }
   }
 
   if (!res.ok || !json || !('success' in json) || !json.success) {

@@ -5,6 +5,7 @@ import { api, ApiClientError } from '@/lib/api';
 import type { RatePoint } from '@/lib/catalogTypes';
 import type { RateLatest } from '@/lib/types';
 import { EmptyState } from '@/components/PageHeader';
+import { showToast } from '@/components/Toast';
 
 function pctChange(prev: number, next: number) {
   if (prev === 0) return next === 0 ? 0 : 100;
@@ -29,6 +30,143 @@ export function RateForm() {
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [confirmForce, setConfirmForce] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [fetchingApi, setFetchingApi] = useState(false);
+  const [broadcasting, setBroadcasting] = useState(false);
+  const [apiNote, setApiNote] = useState<string | null>(null);
+  const [marginGold, setMarginGold] = useState('2');
+  const [marginSilver, setMarginSilver] = useState('3');
+
+  async function fetchFromApi() {
+    setFetchingApi(true);
+    setError(null);
+    setApiNote(null);
+    try {
+      await api.patch('/admin/rates/api-settings', {
+        marginPercentGold: Number(marginGold),
+        marginPercentSilver: Number(marginSilver),
+      });
+      const data = await api.post<{
+        suggestion: {
+          suggested: {
+            gold24kPerGram: number;
+            gold22kPerGram: number;
+            gold18kPerGram: number;
+            silverPerGram: number;
+          };
+          note: string;
+          fallbackUsed: boolean;
+          marginPercentGold: number;
+          marginPercentSilver: number;
+          provider: string;
+        };
+      }>('/admin/rates/fetch-suggest', {});
+      const s = data.suggestion.suggested;
+      setGold24k(String(s.gold24kPerGram));
+      setGold22k(String(s.gold22kPerGram));
+      setGold18k(String(s.gold18kPerGram));
+      setSilver(String(s.silverPerGram));
+      setNote(`API ${data.suggestion.provider}`);
+      setApiNote(data.suggestion.note);
+      setToast(
+        data.suggestion.fallbackUsed
+          ? 'Provider failed — form filled from last published rates (manual fallback).'
+          : `Fetched via ${data.suggestion.provider}. Review, then Publish from API or Save.`,
+      );
+      showToast('Rate suggestion loaded', 'success');
+    } catch (err) {
+      setError(
+        err instanceof ApiClientError
+          ? err.message
+          : 'Fetch failed (is FEATURE_RATE_API on?)',
+      );
+    } finally {
+      setFetchingApi(false);
+    }
+  }
+
+  async function publishFromApi(force = false) {
+    setSaving(true);
+    setError(null);
+    try {
+      const values = Object.values(parsed);
+      if (values.some((v) => !Number.isFinite(v) || v <= 0)) {
+        throw new Error('All rates must be numbers greater than 0');
+      }
+      await api.post('/admin/rates/publish-from-api', {
+        ...parsed,
+        note: note.trim() || undefined,
+        force: force || undefined,
+      });
+      setToast('Rates published from API (source=api).');
+      showToast('Rates published from API', 'success');
+      setConfirmForce(false);
+      await load();
+    } catch (err) {
+      if (err instanceof ApiClientError && err.code === 'LARGE_RATE_CHANGE') {
+        setConfirmForce(true);
+        setError('Large change (≥5%). Confirm force publish from API.');
+      } else {
+        setError(err instanceof ApiClientError ? err.message : 'Publish from API failed');
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function broadcastRatesWa() {
+    setBroadcasting(true);
+    setError(null);
+    try {
+      const data = await api.post<{
+        broadcast: { status: string; dryRun: boolean; recipientCount: number };
+      }>('/admin/whatsapp-business/broadcast/rates', {});
+      const b = data.broadcast;
+      setToast(
+        b.dryRun
+          ? `WA rates broadcast dry-run logged (${b.recipientCount} recipients).`
+          : `WA rates broadcast ${b.status} (${b.recipientCount} recipients).`,
+      );
+    } catch (err) {
+      setError(
+        err instanceof ApiClientError
+          ? err.message
+          : 'Broadcast failed (is FEATURE_WHATSAPP_BUSINESS_API on?)',
+      );
+    } finally {
+      setBroadcasting(false);
+    }
+  }
+
+  async function shareRateCard() {
+    setSharing(true);
+    setError(null);
+    try {
+      const data = await api.get<{ card: { html: string; shareText: string } }>(
+        '/rates/share-card',
+        false,
+      );
+      const w = window.open('', '_blank');
+      if (w) {
+        w.document.write(data.card.html);
+        w.document.close();
+        w.focus();
+        w.print();
+      }
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(data.card.shareText);
+        setToast('Rate card opened for print; share text copied');
+      }
+    } catch (err) {
+      setError(
+        err instanceof ApiClientError
+          ? err.message
+          : 'Share card failed (is FEATURE_SHARE_RATE_CARD on?)',
+      );
+    } finally {
+      setSharing(false);
+    }
+  }
 
   async function load() {
     setLoading(true);
@@ -103,6 +241,7 @@ export function RateForm() {
         );
       } else {
         setToast('Rates saved successfully.');
+        showToast('Rates saved', 'success');
       }
       setConfirmForce(false);
       setNote('');
@@ -145,6 +284,80 @@ export function RateForm() {
           {error}
         </p>
       ) : null}
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          disabled={sharing || !latest}
+          onClick={() => void shareRateCard()}
+          className="rounded border border-[var(--color-border)] px-4 py-2 text-sm disabled:opacity-60"
+        >
+          {sharing ? 'Preparing…' : 'Print / share rate card'}
+        </button>
+        <button
+          type="button"
+          disabled={broadcasting || !latest}
+          onClick={() => void broadcastRatesWa()}
+          className="rounded border border-[var(--color-border)] px-4 py-2 text-sm disabled:opacity-60"
+        >
+          {broadcasting ? 'Broadcasting…' : 'WA Business: broadcast rates'}
+        </button>
+      </div>
+
+      <section className="rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">
+        <h2 className="font-display text-xl">Rate API (premium)</h2>
+        <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
+          Fetch spot metals, apply retailer margin, then publish. Manual save below always works as
+          fallback. Requires FEATURE_RATE_API.
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="block space-y-1.5">
+            <span className="text-sm">Gold margin %</span>
+            <input
+              type="number"
+              min="0"
+              max="25"
+              step="0.1"
+              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] px-3 py-2 text-sm"
+              value={marginGold}
+              onChange={(e) => setMarginGold(e.target.value)}
+            />
+          </label>
+          <label className="block space-y-1.5">
+            <span className="text-sm">Silver margin %</span>
+            <input
+              type="number"
+              min="0"
+              max="25"
+              step="0.1"
+              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] px-3 py-2 text-sm"
+              value={marginSilver}
+              onChange={(e) => setMarginSilver(e.target.value)}
+            />
+          </label>
+        </div>
+        {apiNote ? (
+          <p className="mt-2 text-xs text-[var(--color-text-secondary)]">{apiNote}</p>
+        ) : null}
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={fetchingApi}
+            onClick={() => void fetchFromApi()}
+            className="rounded border border-[var(--color-border)] px-4 py-2 text-sm disabled:opacity-60"
+          >
+            {fetchingApi ? 'Fetching…' : 'Fetch from API'}
+          </button>
+          <button
+            type="button"
+            disabled={saving}
+            onClick={() => void publishFromApi(confirmForce)}
+            className="rounded bg-[var(--color-primary)] px-4 py-2 text-sm text-white disabled:opacity-60"
+          >
+            Publish from API
+          </button>
+        </div>
+      </section>
 
       <form
         onSubmit={onSubmit}
