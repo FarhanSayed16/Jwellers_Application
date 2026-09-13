@@ -1,0 +1,6 @@
+# Place this file at apps/mobile/android/key.properties (gitignored).
+# Paths are relative to apps/mobile/android/ unless absolute.
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=ratnaraj
+storeFile=upload-keystore.jks

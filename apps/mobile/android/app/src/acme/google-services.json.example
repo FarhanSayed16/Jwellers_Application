@@ -1,0 +1,24 @@
+{
+  "_comment": "Copy to google-services.json after creating the Android app in Firebase Console for this flavor. Do not commit real files.",
+  "project_info": {
+    "project_number": "REPLACE_ME",
+    "project_id": "REPLACE_CLIENT_FIREBASE_PROJECT",
+    "storage_bucket": "REPLACE_CLIENT_FIREBASE_PROJECT.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:REPLACE:android:REPLACE",
+        "android_client_info": {
+          "package_name": "com.acme.jewellers"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "REPLACE_ME"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

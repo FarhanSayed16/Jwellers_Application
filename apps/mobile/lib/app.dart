@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/config/providers.dart';
 import 'core/flavor/flavor_config.dart';
 import 'core/router/app_router.dart';
+import 'core/router/deep_link_listener.dart';
 import 'core/theme/app_theme.dart';
 
 class JwellersApp extends ConsumerWidget {
@@ -18,13 +19,15 @@ class JwellersApp extends ConsumerWidget {
     final light = config != null ? lightThemeFromConfig(config) : bootstrapLightTheme();
     final dark = config != null ? darkThemeFromConfig(config) : bootstrapDarkTheme();
 
-    return MaterialApp.router(
-      title: config?.shopName ?? FlavorConfig.instance.appName,
-      debugShowCheckedModeBanner: false,
-      theme: light,
-      darkTheme: dark,
-      themeMode: themeMode,
-      routerConfig: router,
+    return DeepLinkListener(
+      child: MaterialApp.router(
+        title: config?.shopName ?? FlavorConfig.instance.appName,
+        debugShowCheckedModeBanner: false,
+        theme: light,
+        darkTheme: dark,
+        themeMode: themeMode,
+        routerConfig: router,
+      ),
     );
   }
 }

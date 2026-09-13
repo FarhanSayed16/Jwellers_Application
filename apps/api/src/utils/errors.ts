@@ -49,3 +49,11 @@ export function tooManyRequests(
 ) {
   return new AppError(429, code, message, details);
 }
+
+export function serviceUnavailable(
+  code = 'SERVICE_UNAVAILABLE',
+  message = 'Service temporarily unavailable',
+  details?: ErrorDetails,
+) {
+  return new AppError(503, code, message, details);
+}
