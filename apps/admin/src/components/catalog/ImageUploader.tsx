@@ -141,7 +141,11 @@ export function ImageUploader({
             className="flex items-center gap-3 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img.url} alt="" className="h-14 w-14 rounded object-cover" />
+            <img
+              src={img.url}
+              alt={img.isPrimary ? `Primary catalog image ${index + 1}` : `Catalog image ${index + 1}`}
+              className="h-14 w-14 rounded object-cover"
+            />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs text-[var(--color-text-secondary)]">{img.url}</p>
               {img.isPrimary ? (
@@ -157,6 +161,7 @@ export function ImageUploader({
                 className="rounded p-1 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)]"
                 onClick={() => setPrimary(index)}
                 title="Set primary"
+                aria-label="Set as primary image"
               >
                 <Star size={16} fill={img.isPrimary ? 'currentColor' : 'none'} />
               </button>
@@ -164,6 +169,7 @@ export function ImageUploader({
                 type="button"
                 className="rounded p-1 text-[var(--color-error)]"
                 onClick={() => remove(index)}
+                aria-label="Remove image"
               >
                 <Trash2 size={16} />
               </button>

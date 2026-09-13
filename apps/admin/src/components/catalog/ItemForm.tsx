@@ -401,9 +401,52 @@ export function ItemForm({ itemId }: { itemId?: string }) {
             <button type="button" className="rounded border border-[var(--color-error)] px-4 py-2 text-sm text-[var(--color-error)]" onClick={() => void onDelete()}>
               Soft-delete
             </button>
+            <PrintTagButton itemId={itemId} />
           </>
         )}
       </div>
     </form>
+  );
+}
+
+function PrintTagButton({ itemId }: { itemId: string }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function printTag() {
+    setBusy(true);
+    setErr(null);
+    try {
+      const data = await api.get<{
+        tag: { tagHtml: string; deepLink: string };
+      }>(`/admin/items/${itemId}/print-tag`);
+      const w = window.open('', '_blank');
+      if (!w) {
+        setErr('Pop-up blocked — allow pop-ups to print tags');
+        return;
+      }
+      w.document.write(data.tag.tagHtml);
+      w.document.close();
+      w.focus();
+      w.print();
+    } catch (e) {
+      setErr(e instanceof ApiClientError ? e.message : 'Print tag failed (is FEATURE_ITEM_QR on?)');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <button
+        type="button"
+        disabled={busy}
+        className="rounded border border-[var(--color-border)] px-4 py-2 text-sm disabled:opacity-60"
+        onClick={() => void printTag()}
+      >
+        {busy ? 'Preparing…' : 'Print QR tag'}
+      </button>
+      {err && <span className="text-xs text-[var(--color-error)]">{err}</span>}
+    </div>
   );
 }

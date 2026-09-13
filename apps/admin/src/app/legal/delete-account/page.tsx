@@ -1,4 +1,12 @@
+import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { legalPageMetadata } from '@/lib/legalMeta';
+
+export const metadata: Metadata = legalPageMetadata({
+  title: 'Delete account | Retailer Legal',
+  description: 'How to delete your customer account and personal data from the jewellery shop app.',
+  path: '/legal/delete-account',
+});
 
 export default function DeleteAccountWebPage() {
   return (

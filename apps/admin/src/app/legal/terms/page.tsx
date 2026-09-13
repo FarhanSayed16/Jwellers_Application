@@ -1,4 +1,13 @@
+import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { legalPageMetadata } from '@/lib/legalMeta';
+
+export const metadata: Metadata = legalPageMetadata({
+  title: 'Terms of use | Retailer Legal',
+  description:
+    'Terms for using the jewellery shop catalogue and enquiry app. Rates are indicative unless invoiced.',
+  path: '/legal/terms',
+});
 
 export default function TermsOfUsePage() {
   return (

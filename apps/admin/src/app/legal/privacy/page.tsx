@@ -1,4 +1,13 @@
+import type { Metadata } from 'next';
 import { LegalShell } from '@/components/legal/LegalShell';
+import { legalPageMetadata } from '@/lib/legalMeta';
+
+export const metadata: Metadata = legalPageMetadata({
+  title: 'Privacy policy | Retailer Legal',
+  description:
+    'How the jewellery shop customer app handles phone login, chat, push tokens, and account deletion.',
+  path: '/legal/privacy',
+});
 
 export default function PrivacyPolicyPage() {
   return (
