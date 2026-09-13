@@ -1,0 +1,15 @@
+{
+  "clientSlug": "acme",
+  "displayName": "Acme Jewellers",
+  "contactPhone": "9999999999",
+  "contactEmail": "hello@acme.example",
+  "address": {
+    "line1": "TBD",
+    "city": "TBD",
+    "state": "TBD",
+    "pincode": "000000",
+    "country": "India"
+  },
+  "gstNumber": "",
+  "notes": "Phase 33 scaffold — fill before production"
+}

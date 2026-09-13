@@ -1,0 +1,4 @@
+sku,title,categorySlug,subcategorySlug,metal,purity,netWeightGrams,grossWeightGrams,status,isNewArrival,isFeatured,huid,description
+ACM-EAR-001,Bali Earrings 001,earrings,bali,gold,22K,3.80,4.00,active,true,true,,Scaffold sample
+ACM-RNG-001,Classic Ring 001,rings,ring-plain,gold,22K,3.20,3.40,active,true,false,,Scaffold sample
+ACM-NEC-001,Necklace Set 001,necklaces,sets,gold,22K,18.50,19.20,active,false,true,,Scaffold sample
