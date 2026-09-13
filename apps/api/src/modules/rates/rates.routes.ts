@@ -10,6 +10,12 @@ import {
   getLatestRate,
   getRateHistory,
 } from './rates.service';
+import {
+  fetchRateSuggestion,
+  getRateApiSettings,
+  publishFromApiSuggestion,
+  updateRateApiSettings,
+} from './rateApi.service';
 import { notifyRatesUpdated } from '../devices/devices.service';
 
 export const ratesRouter = Router();
@@ -89,6 +95,87 @@ ratesRouter.post('/rates/notify', requireAdmin, async (req, res, next) => {
     return next(err);
   }
 });
+
+ratesRouter.get(
+  '/admin/rates/api-settings',
+  requireAdmin,
+  requireFeature('rateApi'),
+  async (_req, res, next) => {
+    try {
+      return sendSuccess(res, { settings: await getRateApiSettings() });
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+ratesRouter.patch(
+  '/admin/rates/api-settings',
+  requireAdmin,
+  requireFeature('rateApi'),
+  async (req, res, next) => {
+    try {
+      const body = z
+        .object({
+          marginPercentGold: z.number().finite().min(0).max(25).optional(),
+          marginPercentSilver: z.number().finite().min(0).max(25).optional(),
+        })
+        .safeParse(req.body);
+      if (!body.success) {
+        return next(badRequest('VALIDATION_ERROR', 'Invalid settings', body.error.flatten()));
+      }
+      const settings = await updateRateApiSettings(body.data);
+      return sendSuccess(res, { settings });
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+ratesRouter.post(
+  '/admin/rates/fetch-suggest',
+  requireAdmin,
+  requireFeature('rateApi'),
+  async (_req, res, next) => {
+    try {
+      const suggestion = await fetchRateSuggestion();
+      return sendSuccess(res, { suggestion });
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
+
+ratesRouter.post(
+  '/admin/rates/publish-from-api',
+  requireAdmin,
+  requireFeature('rateApi'),
+  async (req, res, next) => {
+    try {
+      const body = z
+        .object({
+          gold24kPerGram: positiveMoney,
+          gold22kPerGram: positiveMoney,
+          gold18kPerGram: positiveMoney,
+          silverPerGram: positiveMoney,
+          note: z.string().max(500).optional(),
+          force: z.boolean().optional(),
+        })
+        .safeParse(req.body);
+      if (!body.success) {
+        return next(badRequest('VALIDATION_ERROR', 'Invalid rate payload', body.error.flatten()));
+      }
+      const rate = await publishFromApiSuggestion({
+        ...body.data,
+        adminId: req.admin!.id,
+        ip: req.ip,
+      });
+      return sendSuccess(res, { rate }, 201);
+    } catch (err) {
+      return next(err);
+    }
+  },
+);
 
 ratesRouter.post('/calculator/quote', async (req, res, next) => {
   try {

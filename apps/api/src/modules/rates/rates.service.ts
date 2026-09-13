@@ -158,6 +158,7 @@ export async function createRate(input: {
   note?: string;
   effectiveAt?: Date;
   force?: boolean;
+  source?: 'manual' | 'api';
   adminId: string;
   ip?: string;
 }) {
@@ -192,7 +193,7 @@ export async function createRate(input: {
     ...metals,
     note: input.note,
     effectiveAt: input.effectiveAt ?? new Date(),
-    source: 'manual',
+    source: input.source === 'api' ? 'api' : 'manual',
     createdBy: input.adminId,
   });
 
@@ -205,6 +206,9 @@ export async function createRate(input: {
     after: toSnapshot(doc),
     ip: input.ip,
   });
+
+  const { evaluatePriceAlerts } = await import('../priceAlerts/priceAlerts.service');
+  void evaluatePriceAlerts(metals).catch(() => undefined);
 
   return toSnapshot(doc);
 }
@@ -256,6 +260,12 @@ export async function calculateQuote(input: {
   const taxable = roundMoney(metalValue + making);
   const gst = roundMoney(taxable * (gstPercent / 100));
   const total = roundMoney(taxable + gst);
+
+  const { recordFeatureEventSafe } = await import('../analytics/analytics.service');
+  void recordFeatureEventSafe({
+    type: 'calculator_use',
+    meta: { purity: input.purity, weightGrams: input.weightGrams },
+  });
 
   return {
     purity: input.purity,
