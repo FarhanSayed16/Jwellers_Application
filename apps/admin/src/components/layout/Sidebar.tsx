@@ -23,6 +23,7 @@ import {
   Gift,
   Bell,
   X,
+  Lock,
 } from 'lucide-react';
 import { FeatureGate, OwnerOnly } from '@/components/FeatureGate';
 import { useAuth } from '@/lib/auth';
@@ -105,16 +106,39 @@ export function Sidebar({
               {item.label}
             </Link>
           );
+
+          const lockedNode = (
+            <Link
+              key={item.href + '-locked'}
+              href="/forbidden"
+              className="group flex items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-sm text-[var(--color-text-secondary)] opacity-60 transition-all hover:bg-[var(--color-background)] hover:opacity-100"
+              title="Premium Feature (Locked)"
+              onClick={onClose}
+            >
+              <div className="flex items-center gap-3">
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </div>
+              <Lock size={14} className="text-[#C9A227] transition-transform group-hover:scale-110" />
+            </Link>
+          );
+
           if (item.ownerOnly) {
             return (
-              <OwnerOnly key={item.href}>
-                {item.feature ? <FeatureGate flag={item.feature}>{node}</FeatureGate> : node}
+              <OwnerOnly key={item.href} fallback={lockedNode}>
+                {item.feature ? (
+                  <FeatureGate flag={item.feature} fallback={lockedNode}>
+                    {node}
+                  </FeatureGate>
+                ) : (
+                  node
+                )}
               </OwnerOnly>
             );
           }
           if (item.feature) {
             return (
-              <FeatureGate key={item.href} flag={item.feature}>
+              <FeatureGate key={item.href} flag={item.feature} fallback={lockedNode}>
                 {node}
               </FeatureGate>
             );

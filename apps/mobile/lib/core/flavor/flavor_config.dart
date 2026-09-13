@@ -34,7 +34,7 @@ class FlavorConfig {
         apiBaseUrl: apiBaseUrl ??
             const String.fromEnvironment(
               'API_BASE_URL',
-              defaultValue: 'http://localhost:4000/api/v1',
+              defaultValue: 'https://g6xrghvh-4000.inc1.devtunnels.ms/api/v1',
             ),
         applicationIdHint: 'com.yourco.demojewellers',
       );
@@ -45,7 +45,7 @@ class FlavorConfig {
         apiBaseUrl: apiBaseUrl ??
             const String.fromEnvironment(
               'API_BASE_URL',
-              defaultValue: 'http://localhost:4000/api/v1',
+              defaultValue: 'https://g6xrghvh-4000.inc1.devtunnels.ms/api/v1',
             ),
         applicationIdHint: 'com.ratnaraj.jewellers',
       );
@@ -56,7 +56,7 @@ class FlavorConfig {
         apiBaseUrl: apiBaseUrl ??
             const String.fromEnvironment(
               'API_BASE_URL',
-              defaultValue: 'http://localhost:4000/api/v1',
+              defaultValue: 'https://g6xrghvh-4000.inc1.devtunnels.ms/api/v1',
             ),
         applicationIdHint: 'com.acme.jewellers',
       );
