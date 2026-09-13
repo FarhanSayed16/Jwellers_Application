@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Fraunces, Source_Sans_3 } from 'next/font/google';
 import { AuthProvider } from '@/lib/auth';
 import { initAdminSentry } from '@/lib/sentry';
+import { CookieConsentBanner } from '@/components/legal/CookieConsentBanner';
+import { ToastHost } from '@/components/Toast';
 import './globals.css';
 
 initAdminSentry();
@@ -25,7 +27,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`${fraunces.variable} ${sourceSans.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-white focus:px-3 focus:py-2 focus:shadow"
+        >
+          Skip to main content
+        </a>
+        <AuthProvider>
+          <div id="main-content">{children}</div>
+          <ToastHost />
+          <CookieConsentBanner />
+        </AuthProvider>
       </body>
     </html>
   );

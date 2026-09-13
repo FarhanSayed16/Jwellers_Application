@@ -1,0 +1,110 @@
+# Codemagic — multi-flavor Android AAB (Phase 33)
+# Connect this repo in Codemagic. Fill encrypted env / signing groups in UI.
+# Docs: docs/phase27/CI_STUB.md · docs/phase33/ONBOARDING_KIT_v1.md
+
+workflows:
+  ratnaraj-aab:
+    name: Ratnaraj Play AAB
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - ratnaraj_play_signing
+      vars:
+        PACKAGE_NAME: "com.ratnaraj.jewellers"
+        FLAVOR: "ratnaraj"
+        ENTRYPOINT: "lib/main_ratnaraj.dart"
+      android_signing:
+        - ratnaraj_upload
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd apps/mobile
+          flutter pub get
+      - name: Build app bundle
+        script: |
+          cd apps/mobile
+          flutter build appbundle --release --flavor "$FLAVOR" -t "$ENTRYPOINT" \
+            --dart-define=API_BASE_URL="${API_BASE_URL}" \
+            --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}" \
+            --build-name="${APP_VERSION:-1.0.0}" \
+            --build-number="${PROJECT_BUILD_NUMBER}"
+    artifacts:
+      - apps/mobile/build/app/outputs/bundle/ratnarajRelease/*.aab
+    publishing:
+      email:
+        recipients:
+          - engineering@example.com
+        notify:
+          success: true
+          failure: true
+
+  demo-aab:
+    name: Demo Jewellers AAB
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - demo_play_signing
+      vars:
+        PACKAGE_NAME: "com.yourco.demojewellers"
+        FLAVOR: "demo"
+        ENTRYPOINT: "lib/main_demo.dart"
+      android_signing:
+        - demo_upload
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd apps/mobile
+          flutter pub get
+      - name: Build app bundle
+        script: |
+          cd apps/mobile
+          flutter build appbundle --release --flavor "$FLAVOR" -t "$ENTRYPOINT" \
+            --dart-define=API_BASE_URL="${API_BASE_URL}" \
+            --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}" \
+            --build-name="${APP_VERSION:-1.0.0}" \
+            --build-number="${PROJECT_BUILD_NUMBER}"
+    artifacts:
+      - apps/mobile/build/app/outputs/bundle/demoRelease/*.aab
+    publishing:
+      email:
+        recipients:
+          - engineering@example.com
+        notify:
+          success: true
+          failure: true
+
+  # Parameterized dry-run / Client #2 — set FLAVOR + ENTRYPOINT + signing in Codemagic UI
+  client-flavor-aab:
+    name: Client flavor AAB (acme / next)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      flutter: stable
+      java: 17
+      vars:
+        FLAVOR: "acme"
+        ENTRYPOINT: "lib/main_acme.dart"
+        PACKAGE_NAME: "com.acme.jewellers"
+        # Optional signing group when keystore ready:
+        # groups: [acme_play_signing]
+    scripts:
+      - name: Get Flutter packages
+        script: |
+          cd apps/mobile
+          flutter pub get
+      - name: Build app bundle
+        script: |
+          cd apps/mobile
+          flutter build appbundle --release --flavor "$FLAVOR" -t "$ENTRYPOINT" \
+            --dart-define=API_BASE_URL="${API_BASE_URL:-http://localhost:4000/api/v1}" \
+            --dart-define=APP_VERSION="${APP_VERSION:-1.0.0}" \
+            --build-name="${APP_VERSION:-1.0.0}" \
+            --build-number="${PROJECT_BUILD_NUMBER:-1}"
+    artifacts:
+      - apps/mobile/build/app/outputs/bundle/*Release/*.aab

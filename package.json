@@ -13,7 +13,8 @@
     "build:admin": "npm run build -w @jwellers/admin",
     "lint:api": "npm run lint -w @jwellers/api",
     "lint:admin": "npm run lint -w @jwellers/admin",
-    "lint": "npm run lint:api && npm run lint:admin"
+    "lint": "npm run lint:api && npm run lint:admin",
+    "create-client": "node scripts/create-client.cjs"
   },
   "engines": {
     "node": ">=20"

@@ -1,0 +1,34 @@
+# Stub: validates Flutter mobile can resolve; does not upload to Play.
+# Enable after secrets (keystore) are configured. See docs/phase27/CI_STUB.md
+name: mobile-aab-ratnaraj
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'apps/mobile/**'
+      - 'codemagic.yaml'
+      - '.github/workflows/mobile-aab.yml'
+    branches:
+      - main
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos
+      # Full AAB needs Android SDK + keystore secrets — run on Codemagic or self-hosted:
+      # flutter build appbundle --release --flavor ratnaraj -t lib/main_ratnaraj.dart
+      - name: Print AAB command
+        run: |
+          echo "Store AAB (local/CI with keystore):"
+          echo "flutter build appbundle --release --flavor ratnaraj -t lib/main_ratnaraj.dart --dart-define=API_BASE_URL=https://API/api/v1"
