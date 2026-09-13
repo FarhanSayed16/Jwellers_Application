@@ -14,6 +14,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const sessionExpired = search.get('reason') === 'session';
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -47,6 +48,12 @@ function LoginForm() {
       <p className="mt-2 text-sm text-[var(--color-text-secondary)]">
         Sign in with your owner or staff account.
       </p>
+
+      {sessionExpired ? (
+        <p className="mt-4 rounded-[var(--radius-sm)] border border-[var(--color-warning,#ED6C02)] bg-orange-50 px-3 py-2 text-sm text-[var(--color-warning,#ED6C02)]">
+          Your session expired. Sign in again to continue.
+        </p>
+      ) : null}
 
       <form className="mt-8 space-y-4" onSubmit={onSubmit}>
         <label className="block space-y-1.5">
@@ -89,6 +96,19 @@ function LoginForm() {
       <p className="mt-4 text-center text-sm text-[var(--color-text-secondary)]">
         <Link href="/forgot-password" className="text-[var(--color-primary)] underline-offset-2 hover:underline">
           Forgot password?
+        </Link>
+      </p>
+      <p className="mt-6 text-center text-xs text-[var(--color-text-secondary)]">
+        <Link href="/legal/privacy" className="underline-offset-2 hover:underline">
+          Privacy
+        </Link>
+        {' · '}
+        <Link href="/legal/cookies" className="underline-offset-2 hover:underline">
+          Cookies
+        </Link>
+        {' · '}
+        <Link href="/legal/support" className="underline-offset-2 hover:underline">
+          Support
         </Link>
       </p>
     </div>

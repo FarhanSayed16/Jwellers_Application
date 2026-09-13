@@ -148,7 +148,11 @@ export default function ItemsListPage() {
                     <td className="px-3 py-2">
                       {thumb ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={thumb} alt="" className="h-10 w-10 rounded object-cover" />
+                        <img
+                          src={thumb}
+                          alt={`${item.title} (${item.sku})`}
+                          className="h-10 w-10 rounded object-cover"
+                        />
                       ) : (
                         '—'
                       )}
@@ -191,7 +195,25 @@ export default function ItemsListPage() {
             </tbody>
           </table>
           {items.length === 0 ? (
-            <p className="p-4 text-sm text-[var(--color-text-secondary)]">No items match.</p>
+            <div className="p-6 text-center">
+              <p className="text-sm font-medium">No search results</p>
+              <p className="mt-1 text-sm text-[var(--color-text-secondary)]">
+                No items match these filters. Clear search or change status/category, then Apply.
+              </p>
+              <button
+                type="button"
+                className="mt-3 rounded border border-[var(--color-border)] px-3 py-2 text-sm"
+                onClick={() => {
+                  setQ('');
+                  setStatus('');
+                  setCategoryId('');
+                  setIncludeDeleted(false);
+                  void load();
+                }}
+              >
+                Clear filters
+              </button>
+            </div>
           ) : null}
         </div>
       ) : null}

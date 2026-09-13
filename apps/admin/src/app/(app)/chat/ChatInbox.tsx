@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, ApiClientError } from '@/lib/api';
+import { CHAT_CANNED_REPLIES } from '@/lib/chatCannedReplies';
 
 export type ChatThread = {
   id: string;
@@ -267,6 +268,20 @@ export function ChatInbox({ initialThreadId }: { initialThreadId?: string }) {
             </div>
 
             <footer className="border-t border-[var(--color-border)] p-3">
+              <div className="mb-2 flex flex-wrap gap-1.5">
+                {CHAT_CANNED_REPLIES.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    className="rounded-full border border-[var(--color-border)] px-2.5 py-1 text-xs text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                    onClick={() =>
+                      setDraft((prev) => (prev.trim() ? `${prev.trim()}\n\n${c.body}` : c.body))
+                    }
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
               <div className="mb-2">
                 <input
                   className="w-full rounded border border-[var(--color-border)] bg-transparent px-3 py-2 text-sm"
