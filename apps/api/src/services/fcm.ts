@@ -3,7 +3,7 @@ import path from 'node:path';
 import admin from 'firebase-admin';
 import { env } from '../config/env';
 
-export type FcmPushType = 'rates_updated' | 'chat_message' | 'new_arrival';
+export type FcmPushType = 'rates_updated' | 'chat_message' | 'new_arrival' | 'price_alert';
 
 export type FcmSendInput = {
   type: FcmPushType;

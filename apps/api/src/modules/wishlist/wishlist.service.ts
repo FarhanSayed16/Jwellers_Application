@@ -65,6 +65,8 @@ export async function addToWishlist(customerId: string, itemId: string) {
   try {
     const row = await WishlistModel.create({ customerId, itemId });
     await ItemModel.findByIdAndUpdate(itemId, { $inc: { wishlistCount: 1 } }).exec();
+    const { recordFeatureEventSafe } = await import('../analytics/analytics.service');
+    void recordFeatureEventSafe({ type: 'wishlist_add', customerId, itemId });
     return { wishlistId: String(row._id), itemId, created: true };
   } catch (err) {
     if (isDuplicateKeyError(err)) {
