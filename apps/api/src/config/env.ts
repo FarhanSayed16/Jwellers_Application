@@ -74,14 +74,38 @@ const envSchema = z.object({
   FEATURE_RATE_API: boolFromEnv.default(false),
   FEATURE_MULTI_BRANCH: boolFromEnv.default(false),
   FEATURE_ANALYTICS: boolFromEnv.default(false),
+  FEATURE_CRM_LIGHT: boolFromEnv.default(false),
   FEATURE_WHATSAPP_BUSINESS_API: boolFromEnv.default(false),
   FEATURE_OLD_GOLD_EXCHANGE: boolFromEnv.default(false),
   FEATURE_ITEM_QR: boolFromEnv.default(false),
+  FEATURE_SHARE_RATE_CARD: boolFromEnv.default(false),
+  FEATURE_APPOINTMENTS: boolFromEnv.default(false),
+  FEATURE_STORE_MODE: boolFromEnv.default(false),
+  FEATURE_CURATED_BOARDS: boolFromEnv.default(false),
+  FEATURE_SCHEMES: boolFromEnv.default(false),
+  FEATURE_REFERRALS: boolFromEnv.default(false),
+  FEATURE_PRICE_ALERTS: boolFromEnv.default(false),
   FEATURE_OFFLINE_CATALOG: boolFromEnv.default(false),
   FEATURE_I18N: boolFromEnv.default(false),
 
+  /** Custom scheme for printed QR deep links (e.g. jwellers://items/sku/SKU). */
+  APP_DEEP_LINK_SCHEME: z.string().default('jwellers'),
+
   RAZORPAY_KEY_ID: z.string().optional().default(''),
   RAZORPAY_KEY_SECRET: z.string().optional().default(''),
+
+  /** Metals rate feed (FEATURE_RATE_API). mock | fail | vendor slug. */
+  RATE_API_PROVIDER: z.string().optional().default('mock'),
+  RATE_API_KEY: z.string().optional().default(''),
+  RATE_API_DRY_RUN: boolFromEnv.default(true),
+
+  /** WhatsApp Business / BSP (FEATURE_WHATSAPP_BUSINESS_API). */
+  WA_BSP_PROVIDER: z.string().optional().default('stub'),
+  WA_BSP_API_KEY: z.string().optional().default(''),
+  WA_BSP_PHONE_NUMBER_ID: z.string().optional().default(''),
+  WA_BSP_DRY_RUN: boolFromEnv.default(true),
+  WA_TEMPLATE_RATES: z.string().optional().default('morning_rates'),
+  WA_TEMPLATE_OFFER: z.string().optional().default('offer_broadcast'),
 
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
@@ -102,6 +126,9 @@ const envSchema = z.object({
   LEGAL_TERMS_URL: z.union([z.string().url(), z.literal('')]).optional().default(''),
   LEGAL_DELETE_ACCOUNT_URL: z.union([z.string().url(), z.literal('')]).optional().default(''),
   LEGAL_SUPPORT_EMAIL: z.union([z.string().email(), z.literal('')]).optional().default(''),
+
+  /** When true, API returns 503 for all routes except /health and /ready. */
+  MAINTENANCE_MODE: boolFromEnv.default(false),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -126,6 +153,12 @@ function assertProductionSecrets(parsed: Env) {
     if (value === undefined || value === null || value === '') {
       missing.push(key);
     }
+  }
+
+  // Payments flag ON in production must have live Razorpay keys (blocks forgeable mock webhooks).
+  if (parsed.FEATURE_RAZORPAY_PAYMENTS) {
+    if (!parsed.RAZORPAY_KEY_ID?.trim()) missing.push('RAZORPAY_KEY_ID');
+    if (!parsed.RAZORPAY_KEY_SECRET?.trim()) missing.push('RAZORPAY_KEY_SECRET');
   }
 
   if (missing.length > 0) {

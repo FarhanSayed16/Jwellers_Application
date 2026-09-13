@@ -13,6 +13,9 @@ const enquirySchema = new Schema(
     },
     assignedTo: { type: Schema.Types.ObjectId, ref: 'AdminUser' },
     channel: { type: String, enum: ['app', 'whatsapp_deeplink'], default: 'app' },
+    /** CRM-lite follow-up reminder (FEATURE_CRM_LIGHT) */
+    followUpAt: { type: Date },
+    followUpNote: { type: String },
     ...softDeleteField,
   },
   { timestamps: true },
@@ -21,6 +24,7 @@ const enquirySchema = new Schema(
 enquirySchema.index({ status: 1, createdAt: -1 });
 enquirySchema.index({ customerId: 1, createdAt: -1 });
 enquirySchema.index({ itemId: 1 });
+enquirySchema.index({ followUpAt: 1, status: 1 });
 
 export type EnquiryDoc = any;
 

@@ -15,10 +15,16 @@ export { ChatMessageModel } from './ChatMessage';
 export { DeviceModel } from './Device';
 export { InvoiceModel } from './Invoice';
 export { PaymentModel } from './Payment';
+export { OldGoldQuoteModel } from './OldGoldQuote';
+export { AppointmentModel } from './Appointment';
+export { CuratedBoardModel } from './CuratedBoard';
+export { SchemeModel } from './Scheme';
+export { PriceAlertModel } from './PriceAlert';
 export { FeatureEventModel } from './FeatureEvent';
 export { AuditLogModel } from './AuditLog';
 export { MediaAssetModel } from './MediaAsset';
 export { PasswordResetModel } from './PasswordReset';
+export { WaBroadcastModel } from './WaBroadcast';
 
 /** Ensure all models register indexes when syncIndexes is called. */
 export async function ensureAllModelsLoaded() {
@@ -40,9 +46,15 @@ export async function ensureAllModelsLoaded() {
     import('./Device'),
     import('./Invoice'),
     import('./Payment'),
+    import('./OldGoldQuote'),
+    import('./Appointment'),
+    import('./CuratedBoard'),
+    import('./Scheme'),
+    import('./PriceAlert'),
     import('./FeatureEvent'),
     import('./AuditLog'),
     import('./MediaAsset'),
     import('./PasswordReset'),
+    import('./WaBroadcast'),
   ]);
 }
