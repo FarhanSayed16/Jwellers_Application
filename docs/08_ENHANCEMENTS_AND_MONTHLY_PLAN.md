@@ -305,13 +305,13 @@ Aligns with [05](./05_BUILD_ROADMAP.md) but expands polish, gaps, and sales work
 
 ### Month 12 — Productize the business
 
-- Formal onboarding kit (one-day SLA)  
-- AMC Bronze/Silver/Gold published prices  
-- Case study from Ratnaraj (with permission)  
-- Roadmap review → write next year’s Month plan in this file  
-- Drop ideas that nobody bought; promote ones that closed deals  
+- Formal onboarding kit (one-day SLA) — **done** ([phase33](./phase33/33_COMPLETION_RECORD.md))  
+- AMC Bronze/Silver/Gold published prices — **done** ([AMC_TIERS.md](./commercial/AMC_TIERS.md))  
+- Case study from Ratnaraj (with permission) — **draft only**; permission pending ([phase35/CASE_STUDY_DRAFT.md](./phase35/CASE_STUDY_DRAFT.md))  
+- Roadmap review → Year-2 master plan — **drafted** ([14_MASTER_EXECUTION_PLAN_v2.md](./14_MASTER_EXECUTION_PLAN_v2.md))  
+- Drop ideas that nobody bought; promote ones that closed deals — **provisional** keep/kill ([phase35/KEEP_KILL_PROVISIONAL.md](./phase35/KEEP_KILL_PROVISIONAL.md)); rewrite after real invoices  
 
-**Exit:** Sellable product company rhythm, not one custom project.
+**Exit:** Sellable product company rhythm, not one custom project. *(Engineering Year-1 closeout: Phase 35.)*
 
 ---
 
@@ -338,16 +338,27 @@ When someone says “we should also add X”, add a row — do **not** scatter i
 | Date | Idea | Keep? | Flag / package | Target month | Owner |
 |---|---|---|---|---|---|
 | 2026-09-06 | Doc set 01–08 created | Yes | — | — | — |
-| 2026-09-06 | Share rate card | Yes | `FEATURE_SHARE_RATE_CARD` | 7 | TBD |
-| 2026-09-06 | Appointments | Yes | `FEATURE_APPOINTMENTS` | 7 | TBD |
-| 2026-09-06 | Savings scheme tracker | Maybe | `FEATURE_SAVINGS_SCHEME` | 10 | TBD |
-| 2026-09-06 | Store mode tablet | Yes | `FEATURE_STORE_MODE` | 7 | TBD |
-| 2026-09-06 | CRM-lite tags/reminders | Yes | `FEATURE_CRM_LIGHT` | 8 | TBD |
-| 2026-09-06 | Price alerts | Yes | `FEATURE_PRICE_ALERTS` | 8 | TBD |
-| 2026-09-06 | AR try-on | Later | `FEATURE_AR_TRYON` | 11+ | TBD |
-| | | | | | |
+| 2026-09-06 | Share rate card | **Built** (Phase 31) | `FEATURE_SHARE_RATE_CARD` | Done · sell | Team |
+| 2026-09-06 | Appointments | **Built** (Phase 31) | `FEATURE_APPOINTMENTS` | Done · sell | Team |
+| 2026-09-06 | Savings scheme tracker | **Later** — ≠ festival schemes | `FEATURE_SAVINGS_SCHEME` (proposed) | Year-2 if sold | — |
+| 2026-09-06 | Store mode tablet | **Built** (Phase 31) | `FEATURE_STORE_MODE` | Done · sell | Team |
+| 2026-09-06 | CRM-lite tags/reminders | **Built** (Phase 32) | `FEATURE_CRM_LIGHT` | Done · sell | Team |
+| 2026-09-06 | Price alerts | **Built** (Phase 32) | `FEATURE_PRICE_ALERTS` | Done · sell | Team |
+| 2026-09-06 | AR try-on | **Later / kill-candidate** | `FEATURE_AR_TRYON` | Year-2+ | — |
+| 2026-09-12 | Digital billing | **Built** · Keep—Sell | `FEATURE_DIGITAL_BILLING` | Done | Team |
+| 2026-09-12 | Razorpay advances | **Built** · Checkout SDK deferred | `FEATURE_RAZORPAY_PAYMENTS` | Done · live SDK Year-2 | Team |
+| 2026-09-12 | Old-gold exchange | **Built** · Keep—Sell | `FEATURE_OLD_GOLD_EXCHANGE` | Done | Team |
+| 2026-09-12 | Item QR / boards / share card | **Built** · Keep—Sell | showroom flags | Done | Team |
+| 2026-09-12 | Analytics / referrals / festival schemes | **Built** · Keep—Sell | growth flags | Done | Team |
+| 2026-09-12 | WA Business + Rate API | **Built** · dry-run/mock | premium flags | Done · live vendor when sold | Team |
+| 2026-09-12 | Socket.IO chat | **Park** | paid upgrade | Year-2 if sold | — |
+| 2026-09-12 | Offline / i18n / multi-branch | **Later** · flags only | 34.3 | Year-2 if sold | — |
+| 2026-09-12 | Family vault / scrap buy / AI / media 360 | **Later / kill-candidate** | proposed | Demand only | — |
+| 2026-09-12 | Year-2 priorities draft | Pending sign-off | [V2_PRIORITIES_DRAFT](./phase35/V2_PRIORITIES_DRAFT.md) | — | Team |
 
-**Rule:** New idea → row here → if approved, add flag to [04](./04_FEATURES_AND_MODULES.md) → schedule in §4.
+**Rule:** New idea → row here → if approved, add flag to [04](./04_FEATURES_AND_MODULES.md) → schedule in §4 or [14 v2](./14_MASTER_EXECUTION_PLAN_v2.md).
+
+**Year-1 closeout:** Provisional keep/kill → [phase35/KEEP_KILL_PROVISIONAL.md](./phase35/KEEP_KILL_PROVISIONAL.md). Package reconciliation → [phase35/PACKAGE_RECONCILIATION.md](./phase35/PACKAGE_RECONCILIATION.md).
 
 ---
 
@@ -357,9 +368,11 @@ When someone says “we should also add X”, add a row — do **not** scatter i
 
 **Cut last (selling power):** Chat, rate history, WhatsApp links, hallmark (if they hallmark), calculator accuracy.  
 
-**Cut first under pressure:** AR, AI, savings schemes, family vault, multi-branch, iOS.  
+**Cut first under pressure:** AR, AI, savings **tracker**, family vault, multi-branch, iOS, offline catalog.  
 
-**Build next after Ratnaraj stabilizes:** bulk import, QR, old-gold exchange, billing, analytics.
+**Build next (Year-2 — after Ratnaraj live DoD):** hosted Demo sales path · live Client #2 · premium vendor wiring when sold · Socket.IO only if paid · dependency majors (firebase-admin 14).  
+
+**Already built (do not re-schedule as greenfield):** QR, old-gold, billing, analytics, CRM-lite, schemes, referrals, rate API, WA Business dry-run, `create-client` / onboarding kit.
 
 ---
 
@@ -371,7 +384,9 @@ When someone says “we should also add X”, add a row — do **not** scatter i
 | How do auth & security work? | [02](./02_AUTH_AND_SECURITY.md) |
 | Exact DB fields? | [03](./03_DATA_MODEL.md) |
 | What flags exist & how to price modules? | [04](./04_FEATURES_AND_MODULES.md) |
-| Engineering phase checklist? | [05](./05_BUILD_ROADMAP.md) |
+| Engineering phase checklist (Year-1)? | [05](./05_BUILD_ROADMAP.md) · **[14](./14_MASTER_EXECUTION_PLAN.md)** |
+| Year-2 phases? | [14_MASTER_EXECUTION_PLAN_v2.md](./14_MASTER_EXECUTION_PLAN_v2.md) |
 | Legal / Play? | [06](./06_LEGAL_AND_COMPLIANCE.md) |
 | Ops scaling & wave features? | [07](./07_FUTURE_AND_UPSCALING.md) |
 | Gaps, extra ideas, **month calendar**, sales packages? | **This file (08)** |
+| Year-1 closeout artifacts? | [phase35/](./phase35/35_COMPLETION_RECORD.md) |

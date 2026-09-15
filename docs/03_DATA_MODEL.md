@@ -42,6 +42,12 @@
 | `media_assets` | Optional registry of uploaded assets |
 | `invoices` | Digital bills (module) |
 | `payments` | Razorpay payment records (module) |
+| `old_gold_quotes` | Old-gold exchange estimates (module) |
+| `appointments` | Store visit bookings (module) |
+| `curated_boards` | Occasion/home boards (module) |
+| `schemes` | Festival making-charge schemes (module) |
+| `price_alerts` | Customer rate threshold alerts (module) |
+| `wa_broadcasts` | WhatsApp Business broadcast log (module) |
 | `feature_events` | Optional analytics events (views, wishlist) |
 | `audit_logs` | Security/business audit trail |
 

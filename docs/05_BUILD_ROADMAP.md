@@ -49,20 +49,23 @@ Phases 5–7 can overlap across two developers (one API/admin-leaning, one Flutt
 
 ---
 
-## 4. Immediate next steps (this week)
+## 4. Immediate next steps (post Year-1)
 
-1. Treat [README](./README.md) + docs 01–07 as the only planning set; ignore superseded files.  
-2. Wireframe Core + Chat (Figma or paper) — shared screen list for both devs.  
-3. Create monorepo folders per [01](./01_PRODUCT_AND_ARCHITECTURE.md) §10.  
-4. Implement Mongoose models from [03](./03_DATA_MODEL.md) (even before UI).  
-5. Collect Ratnaraj: logo, colors (light/dark), GST, sample SKUs/photos, module yes/no.  
-6. Open client-owned Atlas + Render + Cloudinary + Play Console when they are ready (ownership from day one).  
+Year-1 engineering phases **01–35** are complete for the gate (see [14](./14_MASTER_EXECUTION_PLAN.md)). Do **not** restart monorepo/wireframe work.
+
+1. Execute **Year-2** from [14_MASTER_EXECUTION_PLAN_v2.md](./14_MASTER_EXECUTION_PLAN_v2.md) after team sign-off.  
+2. Close Ratnaraj live DoD residuals (Play, hosted smoke, training).  
+3. Host Demo for external sales demos.  
+4. Keep docs 03/09/10 in sync when adding modules.
 
 ---
 
 ## 5. What not to do yet
 
 - Multi-tenant rewrite discussions  
-- Paid WhatsApp Business API / analytics dashboards before Core+Chat is live  
 - iOS until a client pays Apple + extra QA  
-- Auto gold rate API until sold as `FEATURE_RATE_API`  
+- Offline / multi-branch / savings **tracker** / AR / AI until sold  
+- Express 5 / Next 16 / firebase-admin 14 without a dedicated upgrade phase  
+- Building Socket.IO chat without a paid upgrade line  
+
+> Historical note: Year-1 “don’t build rate API / analytics before Core” applied during Months 1–4. Those modules now exist behind flags (Phases 32–34).
