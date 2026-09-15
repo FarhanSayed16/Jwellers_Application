@@ -1,0 +1,28 @@
+{
+  "provisional": true,
+  "notes": "Engineering provisional values for Phase 26 seed. Replace from Client INTAKE.md + countersign before production handoff.",
+  "displayName": "Ratnaraj Jewellers",
+  "contactPhone": "9999999999",
+  "whatsapp": "9999999999",
+  "contactEmail": "hello@ratnarajjewellers.local",
+  "gstNumber": null,
+  "bisRegistrationNumber": null,
+  "address": {
+    "line1": "Main Market",
+    "line2": null,
+    "city": "Mumbai",
+    "state": "MH",
+    "pincode": "400001",
+    "country": "India"
+  },
+  "socialLinks": {
+    "whatsapp": "9999999999",
+    "instagram": null,
+    "facebook": null,
+    "website": null
+  },
+  "makingChargeDefault": { "type": "percent", "value": 12 },
+  "gstPercentDefault": 3,
+  "logoUrl": "",
+  "faviconUrl": null
+}
