@@ -1,6 +1,6 @@
 # Jewellery White-Label App — Documentation Index
 
-**Status:** Locked and ready to build  
+**Status:** Year-1 engineering complete (Phases 01–35 gate) · Year-2 draft in [14 v2](./14_MASTER_EXECUTION_PLAN_v2.md)  
 **First client:** Ratnaraj Jewellers  
 **Stack (final):** Flutter · Node/Express (TypeScript) · MongoDB Atlas · Next.js · Render · Vercel Hobby · Cloudinary · MSG91 · FCM  
 
@@ -25,7 +25,47 @@ Read in order for onboarding. Each file has **one job**. Do not mix older files 
 | 11 | [11_MOBILE_APP_SCREENS.md](./11_MOBILE_APP_SCREENS.md) | Flutter **screens, navigation, Riverpod**, flavor bootstrap |
 | 12 | [12_DESIGN_SYSTEM.md](./12_DESIGN_SYSTEM.md) | Tokens, layout rules, wireframe checklist, do/don’t |
 | 13 | [13_END_TO_END_FLOWS.md](./13_END_TO_END_FLOWS.md) | Auth, rates, catalog, wishlist, enquire, **chat**, delete — step-by-step across mobile/admin/API |
-| 14 | [14_MASTER_EXECUTION_PLAN.md](./14_MASTER_EXECUTION_PLAN.md) | **FINAL EXECUTION CHECKLIST** — 35 phases with sub-phases; use this to run the whole project |
+| 14 | [14_MASTER_EXECUTION_PLAN.md](./14_MASTER_EXECUTION_PLAN.md) | **Year-1 FINAL EXECUTION CHECKLIST** — 35 phases |
+| 14v2 | [14_MASTER_EXECUTION_PLAN_v2.md](./14_MASTER_EXECUTION_PLAN_v2.md) | **Year-2 draft** phases (awaiting team sign-off) |
+| 15 | [15_EXTERNAL_GAPS_AND_SETUP_GUIDE.md](./15_EXTERNAL_GAPS_AND_SETUP_GUIDE.md) | **Mocks / deferred externals** — Atlas, MSG91, Cloudinary, FCM, client assets + how to get them |
+| — | [READINESS_WEBSITE_AND_SYSTEM.md](./READINESS_WEBSITE_AND_SYSTEM.md) | **Website & system readiness** — legal, UX states, SEO checklist (complete for engineering) |
+| — | [READINESS_LEGAL_URLS_RUNBOOK.md](./READINESS_LEGAL_URLS_RUNBOOK.md) | Per-client Play URL wiring |
+| — | [READINESS_CLIENT_LEGAL_REVIEW.md](./READINESS_CLIENT_LEGAL_REVIEW.md) | Counsel sign-off pack |
+| — | [POST_PHASE35_AUDIT.md](./POST_PHASE35_AUDIT.md) | **Post–Phase 35 audit** — gaps, bugs, risks, P0–P2 fix list |
+
+## Commercial & Phase packs
+
+| Path | Purpose |
+|---|---|
+| [commercial/](./commercial/) | MSA draft, quote, running costs, AMC tiers |
+| [phase01/](./phase01/) | Kickoff alignment, accounts checklist, launch modules, completion record |
+| [design/](./design/) | **Phase 02** — design system, mobile/admin wireframes, flow review |
+| [phase03/](./phase03/) | **Phase 03** — monorepo completion + Flutter CI note |
+| [phase04/](./phase04/) | **Phase 04** — API foundation completion record |
+| [phase05/](./phase05/) | **Phase 05** — DB models completion record |
+| [phase06/](./phase06/) | **Phase 06** — public config / features completion |
+| [phase07/](./phase07/) | **Phase 07** — admin authentication completion |
+| [phase08/](./phase08/) | **Phase 08** — customer OTP authentication completion |
+| [phase09/](./phase09/) | **Phase 09** — rates API + calculator quote completion |
+| [phase10/](./phase10/) | **Phase 10** — catalog categories/items + dashboard stub |
+| [phase11/](./phase11/) | **Phase 11** — Cloudinary media signing + upload policy |
+| [phase12/](./phase12/) | **Phase 12** — wishlist, enquiries, custom requests, offers |
+| [phase13/](./phase13/) | **Phase 13** — admin web shell, auth, dashboard |
+| [phase14/](./phase14/) | **Phase 14** — admin rates & catalog UI |
+| [phase15/](./phase15/) | **Phase 15** — branding, enquiries, offers, staff, settings |
+| [phase16/](./phase16/) | **Phase 16** — mobile flavors, theme, router, Dio/Riverpod |
+| [phase17/](./phase17/) | **Phase 17** — mobile Home, Collection, Item detail |
+| [phase18/](./phase18/) | **Phase 18** — calculator, rate history, size guide |
+| [phase19/](./phase19/) | **Phase 19** — mobile auth, wishlist, enquire, WhatsApp |
+| [phase20/](./phase20/) | **Phase 20** — chat Phase A (API + admin + mobile) |
+| [phase21/](./phase21/) | **Phase 21** — FCM push (devices, rates/chat/arrival) |
+| [phase22/](./phase22/) | **Phase 22** — Hallmark, Offers, clone, CSV import, filters |
+| [phase23/](./phase23/) | **Phase 23** — Privacy/terms, account deletion, Play data safety |
+| [phase24/](./phase24/)–[phase34/](./phase34/) | Hardening → Demo → Ratnaraj → Play → handoff → launch freeze → monetization → showroom → growth → Client #2 automation → premium messaging |
+| [phase35/](./phase35/) | **Year-1 closeout** — keep/kill, reconciliation, audits, v2 priorities |
+| [../clients/ratnaraj/](../clients/ratnaraj/) | First client intake + branding placeholders |
+| [../clients/demo/](../clients/demo/) | Demo Jewellers template brand |
+| [../clients/acme/](../clients/acme/) | Client #2 dry-run pack |
 
 ### Suggested reading for implementers
 
