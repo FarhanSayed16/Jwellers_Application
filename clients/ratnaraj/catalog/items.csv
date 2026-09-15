@@ -1,0 +1,11 @@
+sku,title,categorySlug,subcategorySlug,metal,purity,netWeightGrams,grossWeightGrams,status,isNewArrival,isFeatured,huid,description
+RR-EAR-001,Bali Earrings 001,earrings,bali,gold,22K,3.80,4.00,active,true,true,HUIDRR001,Provisional sample - replace photo via Admin after Cloudinary upload
+RR-EAR-002,Jhumka Earrings 002,earrings,jhumka,gold,22K,6.10,6.40,active,false,true,,Provisional sample item
+RR-NEC-001,Necklace Set 001,necklaces,sets,gold,22K,18.50,19.20,active,true,true,,Provisional sample item
+RR-BAN-001,Bangle Pair 001,bangles,bangle-plain,gold,22K,22.00,22.80,active,false,false,,Provisional sample item
+RR-RNG-001,Classic Ring 001,rings,ring-plain,gold,22K,3.20,3.40,active,true,false,,Provisional sample item
+RR-RNG-002,Stone Ring 002,rings,stone,gold,18K,4.50,4.80,active,false,true,,Provisional sample item
+RR-CHN-001,Rope Chain 001,chains,rope,gold,22K,10.00,10.30,active,false,true,,Provisional sample item
+RR-PND-001,Pendant 001,pendants,pendant-plain,gold,22K,2.40,2.55,active,true,false,,Provisional sample item
+RR-SLV-001,Silver Rakhi 001,silver,rakhi,silver,other,8.00,8.00,active,true,false,,Provisional silver sample
+RR-SLV-002,Silver Coin 002,silver,coins,silver,other,10.00,10.00,active,false,false,,Provisional silver sample

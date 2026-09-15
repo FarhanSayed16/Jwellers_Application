@@ -1,0 +1,41 @@
+{
+  "clientSlug": "ratnaraj",
+  "clientDisplayName": "Ratnaraj Jewellers",
+  "platforms": {
+    "android": true,
+    "ios": false
+  },
+  "ownership": {
+    "playConsole": "client",
+    "infraAccounts": "client"
+  },
+  "features": {
+    "FEATURE_CHAT": true,
+    "FEATURE_WHATSAPP": true,
+    "FEATURE_RATE_HISTORY": true,
+    "FEATURE_SIZE_GUIDE": true,
+    "FEATURE_OFFERS": true,
+    "FEATURE_CUSTOM_REQUESTS": true,
+    "FEATURE_HALLMARK": true,
+    "FEATURE_DIGITAL_BILLING": false,
+    "FEATURE_RAZORPAY_PAYMENTS": false,
+    "FEATURE_RATE_API": false,
+    "FEATURE_MULTI_BRANCH": false,
+    "FEATURE_ANALYTICS": false,
+    "FEATURE_CRM_LIGHT": false,
+    "FEATURE_WHATSAPP_BUSINESS_API": false,
+    "FEATURE_OLD_GOLD_EXCHANGE": false,
+    "FEATURE_ITEM_QR": false,
+    "FEATURE_SHARE_RATE_CARD": false,
+    "FEATURE_APPOINTMENTS": false,
+    "FEATURE_STORE_MODE": false,
+    "FEATURE_CURATED_BOARDS": false,
+    "FEATURE_SCHEMES": false,
+    "FEATURE_REFERRALS": false,
+    "FEATURE_PRICE_ALERTS": false,
+    "FEATURE_OFFLINE_CATALOG": false,
+    "FEATURE_I18N": false
+  },
+  "notes": "Engineering locked to recommended launch modules (Hallmark ON). Client countersign still required before production handoff — set FEATURE_HALLMARK=false if they do not hallmark.",
+  "status": "engineering_locked_pending_client_countersign"
+}
