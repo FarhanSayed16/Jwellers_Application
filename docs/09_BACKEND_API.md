@@ -300,13 +300,52 @@ Legend: **P** = public · **C** = customer JWT · **A** = admin JWT · **O** = o
 | POST | `/payments/webhook` | P | signature verify (raw body) |
 | GET | `/admin/payments` | A | |
 
-### 6.16 Calculator helper (optional)
+### 6.16 Old-gold — F:OLD_GOLD_EXCHANGE
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| POST | `/old-gold/estimate` | P/C | estimate exchange value |
+| GET/PATCH | `/admin/old-gold/*` | A | quote inbox |
+
+### 6.17 Showroom — F:ITEM_QR · SHARE_RATE_CARD · CURATED_BOARDS · APPOINTMENTS · STORE_MODE
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET | `/items/:id/qr` (or SKU print) | A | printable QR / tag |
+| GET | `/rates/share-card` | P/A | HTML + share text |
+| CRUD | `/admin/boards` | A | curated Home boards |
+| CRUD | `/appointments` · `/admin/appointments` | C/A | visit booking |
+
+### 6.18 Growth — F:ANALYTICS · CRM_LIGHT · SCHEMES · REFERRALS · PRICE_ALERTS
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| POST | `/events` | P/C | feature events |
+| GET | `/admin/crm/customers` | A | tags / follow-ups |
+| GET | `/schemes/active` | P | festival schemes |
+| GET | `/admin/referrals/stats` | A | |
+| CRUD | `/price-alerts` · `/admin/price-alerts` | C/A | |
+
+### 6.19 Premium — F:RATE_API · WHATSAPP_BUSINESS_API
+
+| Method | Path | Auth | Notes |
+|---|---|---|---|
+| GET/PATCH | `/admin/rates/api-settings` | A | retailer margin |
+| POST | `/admin/rates/fetch-suggest` | A | mock/live metals feed |
+| POST | `/admin/rates/publish-from-api` | A | `source=api` |
+| POST | `/admin/whatsapp-business/broadcast/rates` | A | dry-run without BSP keys |
+| POST | `/admin/whatsapp-business/broadcast/offer` | A | |
+| GET | `/admin/whatsapp-business/broadcasts` | A | log |
+
+### 6.20 Calculator helper
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
 | POST | `/calculator/quote` | P | `{ purity, weightGrams, makingType, makingValue, gstPercent? }` → breakup using latest rates |
 
 Keeps Flutter and admin math identical.
+
+> Full folder tree also includes `modules/oldGold`, `appointments`, `showroom`, `analytics`, `crm`, `schemes`, `referrals`, `priceAlerts`, `whatsappBusiness`, `billing`, `payments` (see `apps/api/src/app.ts`).
 
 ---
 

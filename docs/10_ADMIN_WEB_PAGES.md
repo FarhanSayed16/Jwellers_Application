@@ -41,6 +41,14 @@ apps/admin/
       staff/page.tsx
       invoices/page.tsx         # if feature
       payments/page.tsx         # if feature
+      old-gold/page.tsx         # if feature
+      appointments/page.tsx     # if feature
+      boards/page.tsx           # if feature
+      analytics/page.tsx        # if feature
+      crm/page.tsx              # if feature
+      schemes/page.tsx          # if feature
+      referrals/page.tsx        # if feature
+      price-alerts/page.tsx     # if feature
       settings/page.tsx
     layout.tsx
     globals.css
@@ -49,7 +57,7 @@ apps/admin/
     layout/Sidebar.tsx
     layout/Topbar.tsx
     catalog/ItemForm.tsx
-    rates/RateForm.tsx
+    rates/RateForm.tsx        # + Rate API fetch/publish + WA broadcast (premium)
     chat/ThreadList.tsx
     chat/MessagePane.tsx
   lib/
@@ -101,11 +109,14 @@ Redirect to `/` dashboard.
 │  • Offers* │                                      │
 │  • Brand*  │                                      │
 │  • Staff*  │                                      │
+│  • Invoices* / Payments* / Old-gold*              │
+│  • Appointments* / Boards* / Analytics* / CRM*    │
+│  • Schemes* / Referrals* / Price alerts*          │
 │  • Settings│                                      │
 └────────────┴──────────────────────────────────────┘
 ```
 
-`*` = owner-only or feature-flag gated. Hide nav items when flag is false.
+`*` = owner-only or feature-flag gated. Hide nav items when flag is false. Rates page also hosts Rate API + WA Business broadcast actions when premium flags are on.
 
 **Mobile admin:** usable but not primary; collapse sidebar to drawer &lt; 768px.
 
